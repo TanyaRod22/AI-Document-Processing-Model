@@ -143,4 +143,3 @@ app/
 ## Non-goals (by design)
 
 No authentication or deployment manifests—the API and local persistence remain the core; the UI is a thin client for local use.
-# AI-Document-Processing-Model
