@@ -41,7 +41,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 - API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 - Health: `GET /health`
 
-CORS is enabled for the Vite dev origin (`http://127.0.0.1:5173` and `http://localhost:5173`).
+CORS is enabled for the Vite dev origin.
 
 ### DocuMind web UI (optional)
 
@@ -49,7 +49,7 @@ In a second terminal:
 
 ```bash
 cd frontend
-cp .env.example .env   # optional; defaults to http://127.0.0.1:8000
+cp .env.example .env   # optional; defaults to http://127.0.0.0:8000
 npm install
 npm run dev
 ```
