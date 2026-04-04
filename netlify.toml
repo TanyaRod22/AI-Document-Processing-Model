@@ -1,0 +1,11 @@
+# DocuMind UI: Vite app lives in /frontend
+[build]
+  base = "frontend"
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+# SPA: all routes serve index.html (safe for client-side routing / refresh)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
