@@ -152,7 +152,3 @@ app/
 - **Similarity**: Embeddings are L2‑normalized; FAISS `IndexFlatIP` scores correspond to **cosine similarity** (higher is better).
 - **Errors**: Invalid file types, empty PDFs, and API failures return **4xx/502** with a clear `detail` message. Missing `OPENAI_API_KEY` yields **503** on `/upload`, `/query`, and `/ask`.
 - **Logging**: INFO logs cover extraction, chunk counts, index size, and RAG completion.
-
-## Non-goals (by design)
-
-No end-user **authentication** in the API. **Deployment** is not fully prescribed, but **`Procfile`** (Railway) and **`netlify.toml`** (DocuMind UI) are included as optional conveniences—you still supply hosting accounts, env vars, and secrets yourself.
