@@ -44,10 +44,6 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8003
 - API docs: [http://localhost:8003/docs](http://localhost:8003/docs)
 - Health: `GET /health`
 
-**CORS:** Allowed origins come from `CORS_ORIGINS` (defaults include Vite dev URLs and `https://aidocumind.netlify.app`). Restart `uvicorn` after changing `.env`. Add more origins (e.g. Netlify preview URLs) as comma-separated values.
-
-**Netlify + local API:** If the site at `https://aidocumind.netlify.app` calls `http://127.0.0.1:8003`, that only works on **your** computer while the API runs locally—visitors’ browsers cannot reach your laptop. For real users, deploy the API to a public URL and set Netlify **`VITE_API_BASE`** to that URL at build time.
-
 ### DocuMind web UI (optional)
 
 In a second terminal:
