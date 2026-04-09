@@ -25,6 +25,12 @@ class Settings(BaseSettings):
     query_top_k: int = 5
     embedding_batch_size: int = 100
 
+    # Comma-separated browser origins (required when allow_credentials=True; do not use "*").
+    cors_origins: str = (
+        "http://127.0.0.1:5173,http://localhost:5173,"
+        "https://aidocumind.netlify.app"
+    )
+
 
 def get_settings() -> Settings:
     """Return settings instance (callers may cache as needed)."""

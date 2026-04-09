@@ -357,7 +357,7 @@ export default function App() {
                 <IconUploadTray />
               </span>
               <p className="upload-zone__title">Drop your document here</p>
-              <p className="upload-zone__subtitle">PDF, DOCX, TXT up to 20MB</p>
+              <p className="upload-zone__subtitle">PDF, TXT up to 20MB</p>
               {uploadBusy && <p className="upload-zone__status">Uploading…</p>}
             </label>
           ) : (

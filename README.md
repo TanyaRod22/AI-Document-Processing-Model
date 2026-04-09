@@ -21,16 +21,18 @@ cp .env.example .env
 
 Optional environment variables (see `app/config.py`):
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `OPENAI_API_KEY` | OpenAI key | _(required for upload/query/ask)_ |
-| `VECTOR_STORE_DIR` | FAISS + metadata directory | `./data/vector_store` |
-| `CHUNK_SIZE_TOKENS` | Chunk size | `500` |
-| `CHUNK_OVERLAP_TOKENS` | Overlap | `50` |
-| `QUERY_TOP_K` | Chunks returned for `/query` and `/ask` context | `5` |
-| `EMBEDDING_MODEL` | Embeddings model | `text-embedding-3-small` |
-| `CHAT_MODEL` | Chat model for RAG | `gpt-4o-mini` |
-| `CORS_ORIGINS` | Comma-separated allowed browser origins (CORS) | Local Vite + `https://aidocumind.netlify.app` (see `app/config.py`) |
+
+| Variable               | Description                                     | Default                                                             |
+| ---------------------- | ----------------------------------------------- | ------------------------------------------------------------------- |
+| `OPENAI_API_KEY`       | OpenAI key                                      | *(required for upload/query/ask)*                                   |
+| `VECTOR_STORE_DIR`     | FAISS + metadata directory                      | `./data/vector_store`                                               |
+| `CHUNK_SIZE_TOKENS`    | Chunk size                                      | `500`                                                               |
+| `CHUNK_OVERLAP_TOKENS` | Overlap                                         | `50`                                                                |
+| `QUERY_TOP_K`          | Chunks returned for `/query` and `/ask` context | `5`                                                                 |
+| `EMBEDDING_MODEL`      | Embeddings model                                | `text-embedding-3-small`                                            |
+| `CHAT_MODEL`           | Chat model for RAG                              | `gpt-4o-mini`                                                       |
+| `CORS_ORIGINS`         | Comma-separated allowed browser origins (CORS)  | Local Vite + `https://aidocumind.netlify.app` (see `app/config.py`) |
+
 
 ## Run
 
@@ -46,7 +48,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8003
 
 **CORS:** Allowed origins come from `CORS_ORIGINS` (defaults include Vite dev URLs and `https://aidocumind.netlify.app`). Restart `uvicorn` after changing `.env`. Add more origins (e.g. Netlify preview URLs) as comma-separated values.
 
-**Netlify + local API:** If the site at `https://aidocumind.netlify.app` calls `http://127.0.0.1:8003`, that only works on **your** computer while the API runs locally—visitors’ browsers cannot reach your laptop. For real users, deploy the API to a public URL and set Netlify **`VITE_API_BASE`** to that URL at build time.
+**Netlify + local API:** If the site at `https://aidocumind.netlify.app` calls `http://127.0.0.1:8003`, that only works on **your** computer while the API runs locally—visitors’ browsers cannot reach your laptop. For real users, deploy the API to a public URL and set Netlify `**VITE_API_BASE`** to that URL at build time.
 
 ### DocuMind web UI (optional)
 
@@ -61,15 +63,21 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173). Upload a PDF or TXT file; the app calls `/upload`, then `/ask` for an automatic summary, and uses `/ask` for chat and quick actions. The **×** control calls `DELETE /documents/{document_id}` to remove that document’s vectors from the index.
 
+**Netlify:** In the site’s **Environment variables**, set `VITE_API_BASE` to your deployed API URL (e.g. `https://…up.railway.app`) and **redeploy**. Builds without this variable embed `http://127.0.0.1:8003`, which causes `ERR_CONNECTION_REFUSED` for everyone except a local dev with uvicorn running.
+
+**Railway:** Railway sets `**PORT`** (often **8080**) inside the container. Use a start command that binds `**0.0.0.0`** to `**$PORT**` — a `**Procfile**` is included: `web: uvicorn main:app --host 0.0.0.0 --port $PORT`. Do **not** put `:8080` on your public Railway URL in `**VITE_API_BASE`**; use the HTTPS hostname Railway shows for **your** service (e.g. `https://<something>.up.railway.app`). **Do not use the literal string `your-service` from old examples** — copy the URL from **Railway → your service → Settings → Networking / Public URL**. If `curl` returns Railway JSON like `"Application not found"`, the hostname is wrong or the service is not deployed.
+
 ## API overview
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `POST` | `/upload` | Upload PDF/TXT, chunk, embed, append to FAISS |
-| `POST` | `/query` | Semantic search (top‑K chunks + scores) |
-| `POST` | `/ask` | RAG answer using retrieved chunks |
-| `DELETE` | `/documents/{document_id}` | Remove all chunks for one upload from FAISS |
-| `GET` | `/health` | Liveness |
+
+| Method   | Path                       | Purpose                                       |
+| -------- | -------------------------- | --------------------------------------------- |
+| `POST`   | `/upload`                  | Upload PDF/TXT, chunk, embed, append to FAISS |
+| `POST`   | `/query`                   | Semantic search (top‑K chunks + scores)       |
+| `POST`   | `/ask`                     | RAG answer using retrieved chunks             |
+| `DELETE` | `/documents/{document_id}` | Remove all chunks for one upload from FAISS   |
+| `GET`    | `/health`                  | Liveness                                      |
+
 
 Each upload gets a unique `document_id`. The FAISS index and `metadata.json` are **persisted** under `VECTOR_STORE_DIR` after each upload and on shutdown.
 
@@ -145,6 +153,3 @@ app/
 - **Errors**: Invalid file types, empty PDFs, and API failures return **4xx/502** with a clear `detail` message. Missing `OPENAI_API_KEY` yields **503** on `/upload`, `/query`, and `/ask`.
 - **Logging**: INFO logs cover extraction, chunk counts, index size, and RAG completion.
 
-## Non-goals (by design)
-
-No authentication or deployment manifests—the API and local persistence remain the core; the UI is a thin client for local use.
