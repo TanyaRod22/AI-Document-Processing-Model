@@ -48,7 +48,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8003
 
 **CORS:** Allowed origins come from `CORS_ORIGINS` (defaults include Vite dev URLs and `https://aidocumind.netlify.app`). Restart `uvicorn` after changing `.env`. Add more origins (e.g. Netlify preview URLs) as comma-separated values.
 
-**Netlify + local API:** If the site at `https://aidocumind.netlify.app` calls `http://127.0.0.1:8003`, that only works on **your** computer while the API runs locally—visitors’ browsers cannot reach your laptop. For real users, deploy the API to a public URL and set `**VITE_API_BASE`** on Netlify to that URL at build time.
+**Netlify + local API:** If the site at `https://aidocumind.netlify.app` calls `http://127.0.0.1:8003`, that only works on **your** computer while the API runs locally—visitors’ browsers cannot reach your laptop. For real users, deploy the API to a public URL and set **`VITE_API_BASE`** on Netlify to that URL at build time.
 
 ### DocuMind web UI (optional)
 
@@ -65,7 +65,7 @@ Open [http://localhost:5173](http://localhost:5173). Upload a PDF or TXT file; t
 
 **Netlify:** In the site’s **Environment variables**, set `VITE_API_BASE` to your deployed API URL (e.g. `https://…up.railway.app`) and **redeploy**. Builds without this variable embed `http://127.0.0.1:8003`, which causes `ERR_CONNECTION_REFUSED` for everyone except a local dev with uvicorn running.
 
-**Railway:** Railway sets `**PORT`** (often **8080**) inside the container. Bind `**0.0.0.0`** to `**$PORT**` — the repo includes a `**Procfile**`: `web: uvicorn main:app --host 0.0.0.0 --port $PORT`. Do **not** put `:8080` on your public Railway URL in `**VITE_API_BASE`**; use the HTTPS hostname Railway shows for **your** service (e.g. `https://<something>.up.railway.app`). Copy the URL from **Railway → your service → Settings → Networking / Public URL**. If `curl` returns Railway JSON like `"Application not found"`, the hostname is wrong or the service is not deployed.
+**Railway:** Railway sets **`PORT`** (often **8080**) inside the container. Bind **`0.0.0.0`** to **`$PORT`** — the repo includes a **`Procfile`**: `web: uvicorn main:app --host 0.0.0.0 --port $PORT`. Do **not** put `:8080` on your public Railway URL in **`VITE_API_BASE`**; use the HTTPS hostname Railway shows for **your** service (e.g. `https://<something>.up.railway.app`). Copy the URL from **Railway → your service → Settings → Networking / Public URL**. If `curl` returns Railway JSON like `"Application not found"`, the hostname is wrong or the service is not deployed.
 
 ## API overview
 
@@ -153,3 +153,6 @@ app/
 - **Errors**: Invalid file types, empty PDFs, and API failures return **4xx/502** with a clear `detail` message. Missing `OPENAI_API_KEY` yields **503** on `/upload`, `/query`, and `/ask`.
 - **Logging**: INFO logs cover extraction, chunk counts, index size, and RAG completion.
 
+## Non-goals (by design)
+
+No end-user **authentication** in the API. **Deployment** is not fully prescribed, but **`Procfile`** (Railway) and **`netlify.toml`** (DocuMind UI) are included as optional conveniences—you still supply hosting accounts, env vars, and secrets yourself.
