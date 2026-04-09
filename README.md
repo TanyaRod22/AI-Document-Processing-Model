@@ -33,12 +33,14 @@ Optional environment variables (see `app/config.py`):
 
 ## Run
 
+**Port choice:** This repo defaults to **8003** for the API so it does not collide with other stacks (many Docker Compose projects use **8000** / **8001**). If those ports are free, you can use `--port 8000` and set `VITE_API_BASE` in `frontend/.env` to match.
+
 ```bash
 source .venv/bin/activate
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn main:app --reload --host 0.0.0.0 --port 8003
 ```
 
-- API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+- API docs: [http://localhost:8003/docs](http://localhost:8003/docs)
 - Health: `GET /health`
 
 CORS is enabled for the Vite dev origin (`http://127.0.0.1:5173` and `http://localhost:5173`).
@@ -49,7 +51,7 @@ In a second terminal:
 
 ```bash
 cd frontend
-cp .env.example .env   # optional; defaults to http://127.0.0.1:8000
+cp .env.example .env   # optional; defaults to http://127.0.0.1:8003 (same as api.ts)
 npm install
 npm run dev
 ```
@@ -75,7 +77,7 @@ Replace `sample.pdf` / `notes.txt` with your files.
 **1. Upload a document**
 
 ```bash
-curl -s -X POST "http://localhost:8000/upload" \
+curl -s -X POST "http://localhost:8003/upload" \
   -F "file=@sample.pdf"
 ```
 
@@ -93,7 +95,7 @@ Example response:
 **2. Semantic search**
 
 ```bash
-curl -s -X POST "http://localhost:8000/query" \
+curl -s -X POST "http://localhost:8003/query" \
   -H "Content-Type: application/json" \
   -d '{"query": "What are the payment terms?"}'
 ```
@@ -101,7 +103,7 @@ curl -s -X POST "http://localhost:8000/query" \
 **3. RAG question**
 
 ```bash
-curl -s -X POST "http://localhost:8000/ask" \
+curl -s -X POST "http://localhost:8003/ask" \
   -H "Content-Type: application/json" \
   -d '{"query": "Summarize the main obligations in one paragraph."}'
 ```
@@ -109,13 +111,13 @@ curl -s -X POST "http://localhost:8000/ask" \
 **4. Remove a document**
 
 ```bash
-curl -s -X DELETE "http://localhost:8000/documents/<document_id>"
+curl -s -X DELETE "http://localhost:8003/documents/<document_id>"
 ```
 
 **5. Health**
 
 ```bash
-curl -s "http://localhost:8000/health"
+curl -s "http://localhost:8003/health"
 ```
 
 ## Project layout

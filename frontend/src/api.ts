@@ -1,5 +1,5 @@
 const API_BASE =
-  (import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000").replace(/\/$/, "");
+  (import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8003").replace(/\/$/, "");
 
 function parseDetail(data: unknown): string {
   if (typeof data !== "object" || data === null || !("detail" in data)) {
