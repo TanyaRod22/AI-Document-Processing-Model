@@ -43,7 +43,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8003
 - API docs: [http://localhost:8003/docs](http://localhost:8003/docs)
 - Health: `GET /health`
 
-CORS is enabled for the Vite dev origin (`http://127.0.0.1:5173` and `http://localhost:5173`).
+CORS is enabled for the Vite dev origin.
 
 ### DocuMind web UI (optional)
 
