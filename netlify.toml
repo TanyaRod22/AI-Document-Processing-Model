@@ -1,4 +1,11 @@
 # DocuMind UI: Vite app lives in /frontend
+#
+# VITE_API_BASE is required at build time (baked into the JS bundle).
+# Netlify UI env vars override values here — if the live site calls the wrong API,
+# check Site settings → Environment variables for a stale VITE_API_BASE.
+[build.environment]
+  VITE_API_BASE = "https://aidocumentprocessing.up.railway.app"
+
 [build]
   base = "frontend"
   command = "npm ci && npm run build"
