@@ -1,5 +1,16 @@
-const API_BASE =
-  (import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8003").replace(/\/$/, "");
+function resolveApiBase(): string {
+  const raw = import.meta.env.VITE_API_BASE;
+  if (raw != null && String(raw).trim() !== "") {
+    return String(raw).replace(/\/$/, "");
+  }
+  if (import.meta.env.DEV) {
+    return "http://127.0.0.1:8003";
+  }
+  return "";
+}
+
+const API_BASE = resolveApiBase();
+export const isApiBaseConfigured = Boolean(API_BASE);
 
 function parseDetail(data: unknown): string {
   if (typeof data !== "object" || data === null || !("detail" in data)) {
@@ -24,6 +35,15 @@ async function readError(res: Response): Promise<string> {
   }
 }
 
+function requireApiBase(): string {
+  if (!API_BASE) {
+    throw new Error(
+      "API URL is not configured. Set VITE_API_BASE to your backend HTTPS URL before building (e.g. in Netlify environment variables).",
+    );
+  }
+  return API_BASE;
+}
+
 export type UploadResult = {
   document_id: string;
   filename: string;
@@ -31,9 +51,10 @@ export type UploadResult = {
 };
 
 export async function uploadDocument(file: File): Promise<UploadResult> {
+  const base = requireApiBase();
   const body = new FormData();
   body.append("file", file);
-  const res = await fetch(`${API_BASE}/upload`, { method: "POST", body });
+  const res = await fetch(`${base}/upload`, { method: "POST", body });
   if (!res.ok) throw new Error(await readError(res));
   return res.json() as Promise<UploadResult>;
 }
@@ -41,7 +62,8 @@ export async function uploadDocument(file: File): Promise<UploadResult> {
 export type AskResult = { answer: string };
 
 export async function askQuestion(query: string): Promise<AskResult> {
-  const res = await fetch(`${API_BASE}/ask`, {
+  const base = requireApiBase();
+  const res = await fetch(`${base}/ask`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -52,7 +74,8 @@ export async function askQuestion(query: string): Promise<AskResult> {
 
 /** Removes vectors for this document from the index. Ignores 404 (already gone). */
 export async function deleteDocument(documentId: string): Promise<void> {
-  const res = await fetch(`${API_BASE}/documents/${encodeURIComponent(documentId)}`, {
+  const base = requireApiBase();
+  const res = await fetch(`${base}/documents/${encodeURIComponent(documentId)}`, {
     method: "DELETE",
   });
   if (res.status === 404) return;

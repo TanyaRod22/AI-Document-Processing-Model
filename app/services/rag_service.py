@@ -60,7 +60,7 @@ class RagService:
 
         hits = self._store.search(qvec, k=self._top_k)
         if not hits:
-            raise RagServiceError("No relevant chunks found.")
+            raise RagServiceError("No relevant data found.")
 
         context_blocks: list[str] = []
         sources: list[MatchedChunk] = []

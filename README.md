@@ -63,7 +63,7 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173). Upload a PDF or TXT file; the app calls `/upload`, then `/ask` for an automatic summary, and uses `/ask` for chat and quick actions. The **×** control calls `DELETE /documents/{document_id}` to remove that document’s vectors from the index.
 
-**Netlify:** In the site’s **Environment variables**, set `VITE_API_BASE` to your deployed API URL (e.g. `https://…up.railway.app`) and **redeploy**. Builds without this variable embed `http://127.0.0.1:8003`, which causes `ERR_CONNECTION_REFUSED` for everyone except a local dev with uvicorn running.
+**Netlify:** In the site’s **Environment variables**, set `VITE_API_BASE` to your deployed API URL (e.g. `https://…up.railway.app`) and **redeploy**. Netlify sets `NETLIFY=true` during build; the frontend **fails the build** if `VITE_API_BASE` is missing, so you are not left with a silent `127.0.0.1:8003` bundle (`ERR_CONNECTION_REFUSED`).
 
 **Railway:** Railway sets **`PORT`** (often **8080**) inside the container. Bind **`0.0.0.0`** to **`$PORT`** — the repo includes a **`Procfile`**: `web: uvicorn main:app --host 0.0.0.0 --port $PORT`. Do **not** put `:8080` on your public Railway URL in **`VITE_API_BASE`**; use the HTTPS hostname Railway shows for **your** service (e.g. `https://<something>.up.railway.app`). Copy the URL from **Railway → your service → Settings → Networking / Public URL**. If `curl` returns Railway JSON like `"Application not found"`, the hostname is wrong or the service is not deployed.
 

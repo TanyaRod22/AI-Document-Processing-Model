@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import "./App.css";
-import { askQuestion, deleteDocument, uploadDocument } from "./api";
+import { askQuestion, deleteDocument, isApiBaseConfigured, uploadDocument } from "./api";
 
 const SUMMARY_PROMPT =
   "Write a concise summary of the document in 2–4 short paragraphs. Focus on the main purpose, key themes, and important facts. Use clear, plain language.";
@@ -305,6 +305,22 @@ export default function App() {
   const actionsDisabled = !docReady || summaryLoading || chatBusy;
   const showLeftTools = hasUploadedDoc;
   const isEmptyLanding = !hasUploadedDoc && !uploadBusy;
+
+  if (import.meta.env.PROD && !isApiBaseConfigured) {
+    return (
+      <div className="app">
+        <div className="config-error" role="alert">
+          <h1 className="config-error__title">API URL missing</h1>
+          <p className="config-error__text">
+            This site was built without <code>VITE_API_BASE</code>. Set it in Netlify (or your host) to your public
+            backend URL (e.g. your Railway <code>https://…up.railway.app</code>), then trigger a new production
+            deploy. Local dev does not need this if you use <code>npm run dev</code> with the default API on port{" "}
+            8003.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
